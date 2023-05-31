@@ -1,4 +1,4 @@
-import React, { memo, useState, useRef } from 'react'
+import React, { memo, useState, createRef } from 'react'
 import type { FC, ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import { HeaderWrapper, HeaderLeft, HeaderRight } from './style'
@@ -8,6 +8,9 @@ import { SearchOutlined } from '@ant-design/icons'
 
 import Modal from '@/components/Modal'
 import LoginForm from './loginForm'
+import { login } from '@/service/modules/Login'
+import LocalStorageUtil from '@/utils/tool'
+import { userInfo } from '@/service/modules/user'
 
 interface IProps {
   children?: ReactNode
@@ -16,7 +19,9 @@ interface IProps {
 const AppHeader: FC<IProps> = () => {
   const [open, setOpen] = useState(false)
 
-  const formRef = useRef<any>(null)
+  const [confirmLoading, setConfirmLoading] = useState(false)
+
+  const formRef = createRef<any>()
 
   const showModal = () => {
     setOpen(true)
@@ -28,11 +33,21 @@ const AppHeader: FC<IProps> = () => {
 
     // 手动调用 Form 组件的 submit 方法来触发表单提交事件
     formInstance && formInstance.submit()
+    setConfirmLoading(true)
   }
 
   const handleLoginFormSubmit = (values: any) => {
-    console.log('LoginForm values:', values)
     // 在这里处理表单的值，例如发送登录请求等操作
+    login(values)
+      .then((res) => {
+        // 保存用户信息
+        LocalStorageUtil.setItem('token', res.token)
+        userInfo()
+      })
+      .finally(() => {
+        setOpen(false)
+        setConfirmLoading(false)
+      })
   }
 
   const handleCancel = () => {
@@ -75,7 +90,13 @@ const AppHeader: FC<IProps> = () => {
       </div>
       <div className="divider"></div>
 
-      <Modal title="登录" open={open} handleOk={handleOk} handleCancel={handleCancel}>
+      <Modal
+        title="登录"
+        open={open}
+        handleOk={handleOk}
+        confirmLoading={confirmLoading}
+        handleCancel={handleCancel}
+      >
         <LoginForm ref={formRef} onFinish={handleLoginFormSubmit} />
       </Modal>
     </HeaderWrapper>

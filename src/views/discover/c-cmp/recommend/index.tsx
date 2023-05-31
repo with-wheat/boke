@@ -5,6 +5,7 @@ import { Button } from 'antd'
 import { useAppSelect, appShallowEqual, useAppDispatch } from '@/store'
 import { setName } from '@/store/modules/discover'
 import { getTest } from '@/service/modules/demo'
+import { userInfo } from '@/service/modules/user'
 
 interface propTypes {
   children?: ReactNode
@@ -27,7 +28,8 @@ const Recommend: FC<propTypes> = () => {
   })
 
   const setNames = () => {
-    dispatch(setName('111'))
+    // dispatch(setName('111'))
+    userInfo()
   }
   return (
     <div>

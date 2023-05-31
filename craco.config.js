@@ -13,7 +13,7 @@ module.exports = {
     // 配置跨域代理
     proxy: {
       '/api': {
-        target: 'http://codercba.com:9002',
+        target: 'http://localhost:8000',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

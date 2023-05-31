@@ -5,13 +5,13 @@ interface propTypes {
   children: ReactNode
   title: string
   open: boolean
+  confirmLoading: boolean
   handleOk: () => void
   handleCancel: () => void
 }
 
 const ModalPage: React.FC<propTypes> = (prop: propTypes) => {
-  const { title, children, open, handleOk, handleCancel } = prop
-  const [confirmLoading, setConfirmLoading] = useState(false)
+  const { title, children, open, handleOk, handleCancel, confirmLoading } = prop
 
   return (
     <>
@@ -19,7 +19,6 @@ const ModalPage: React.FC<propTypes> = (prop: propTypes) => {
         title={title}
         open={open}
         onOk={() => {
-          setConfirmLoading(true)
           handleOk()
         }}
         confirmLoading={confirmLoading}

@@ -2,6 +2,7 @@ import axios from 'axios'
 import type { AxiosInstance } from 'axios'
 import type { RequestInterceptors, RequestConfig } from './type'
 
+import Message from '@/hooks/message'
 const DEFAULTS_LOADING = true
 
 class Request {
@@ -13,7 +14,6 @@ class Request {
   constructor(config: RequestConfig) {
     // 创建axios实例
     this.instance = axios.create(config)
-
     // 保存基本信息
     this.showLoading = config.showLoading ?? DEFAULTS_LOADING
     this.interceptors = config.interceptors
@@ -32,13 +32,10 @@ class Request {
     // 2.添加所有的实例都有的拦截器
     this.instance.interceptors.request.use(
       (config: any) => {
-        // if (this.showLoading) {
-        //   this.loading = ElLoading.service({
-        //     lock: true,
-        //     text: '正在请求数据....',
-        //     background: 'rgba(0, 0, 0, 0.5)'
-        //   })
-        // }
+        if (this.showLoading) {
+          this.loading = Message.loading('加载中')
+        }
+
         return config
       },
       (err: any) => {
@@ -49,17 +46,18 @@ class Request {
     this.instance.interceptors.response.use(
       (res: { data: any }) => {
         // 将loading移除
-        this.loading?.close()
+        this.loading && this.loading()
         const data = res.data
         if (data.code !== 200) {
           console.log('请求失败~, 错误信息')
+          Message.error('请求失败~ ' + data.message)
         } else {
           return data
         }
       },
       (err: { response: { status: number } }) => {
         // 将loading移除
-        this.loading?.close()
+        this.loading && this.loading()
 
         // 例子: 判断不同的HttpErrorCode显示不同的错误信息
         if (err.response.status === 404) {

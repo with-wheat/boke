@@ -1,12 +1,11 @@
-import React, { RefObject } from 'react'
+import React, { forwardRef } from 'react'
 import { Form, Input } from 'antd'
 
 interface propsType {
   onFinish: (val: any) => void
-  ref: RefObject<any>
 }
 
-const LoginForm: React.FC<propsType> = ({ ref, onFinish }) => {
+const LoginForm: React.ForwardRefRenderFunction<any, propsType> = ({ onFinish }, ref) => {
   return (
     <Form
       ref={ref}
@@ -18,8 +17,8 @@ const LoginForm: React.FC<propsType> = ({ ref, onFinish }) => {
       autoComplete="off"
     >
       <Form.Item
-        label="Username"
-        name="username"
+        label="name"
+        name="name"
         rules={[{ required: true, message: 'Please input your username!' }]}
       >
         <Input />
@@ -36,4 +35,4 @@ const LoginForm: React.FC<propsType> = ({ ref, onFinish }) => {
   )
 }
 
-export default LoginForm
+export default forwardRef(LoginForm)
