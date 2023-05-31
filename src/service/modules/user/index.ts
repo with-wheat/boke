@@ -1,9 +1,8 @@
 import Request from '../../index'
 
-export async function userInfo() {
-  const result = await Request.get({
+export function userInfo() {
+  return Request.get({
     url: '/users',
     showLoading: true
   })
-  console.log(result)
 }
